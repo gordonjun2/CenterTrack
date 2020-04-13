@@ -62,6 +62,7 @@ def demo(opt):
             input_meta['pre_dets'] = load_results[img_id_str] \
               if img_id_str in load_results else []
         ret = detector.run(img, input_meta)
+        print(ret)
         time_str = 'frame {} |'.format(cnt)
         for stat in time_stats:
           time_str = time_str + '{} {:.3f}s |'.format(stat, ret[stat])

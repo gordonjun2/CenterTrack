@@ -56,7 +56,7 @@ def prefetch_test(opt):
   Dataset = dataset_factory[opt.test_dataset]
   opt = opts().update_dataset_info_and_set_heads(opt, Dataset)
   print(opt)
-  Logger(opt)
+  #Logger(opt)
   
   split = 'val' if not opt.trainval else 'test'
   dataset = Dataset(opt, split)
@@ -135,7 +135,7 @@ def test(opt):
   Dataset = dataset_factory[opt.test_dataset]
   opt = opts().update_dataset_info_and_set_heads(opt, Dataset)
   print(opt)
-  Logger(opt)
+  #Logger(opt)
   
   split = 'val' if not opt.trainval else 'test'
   dataset = Dataset(opt, split)

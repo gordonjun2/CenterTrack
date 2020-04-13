@@ -17,6 +17,9 @@ from model.utils import _sigmoid, flip_tensor, flip_lr_off, flip_lr
 from utils.debugger import Debugger
 from utils.post_process import generic_post_process
 
+from model.model import create_model, load_model, save_model
+import os
+
 class GenericLoss(torch.nn.Module):
   def __init__(self, opt):
     super(GenericLoss, self).__init__()
@@ -120,7 +123,7 @@ class Trainer(object):
         if isinstance(v, torch.Tensor):
           state[k] = v.to(device=device, non_blocking=True)
 
-  def run_epoch(self, phase, epoch, data_loader):
+  def run_epoch(self, phase, epoch, data_loader, model, optimizer):
     model_with_loss = self.model_with_loss
     if phase == 'train':
       model_with_loss.train()
@@ -154,6 +157,10 @@ class Trainer(object):
         self.optimizer.step()
       batch_time.update(time.time() - end)
       end = time.time()
+
+      if iter_id % int(num_iters/10) == 0:
+        save_model(os.path.join(opt.save_dir, 'model_last.pth'), 
+                  epoch, model, optimizer)
 
       Bar.suffix = '{phase}: [{0}][{1}/{2}]|Tot: {total:} |ETA: {eta:} '.format(
         epoch, iter_id, num_iters, phase=phase,
@@ -310,8 +317,8 @@ class Trainer(object):
       else:
         debugger.show_all_imgs(pause=True)
   
-  def val(self, epoch, data_loader):
-    return self.run_epoch('val', epoch, data_loader)
+  def val(self, epoch, data_loader, model, optimizer):
+    return self.run_epoch('val', epoch, data_loader, model, optimizer)
 
-  def train(self, epoch, data_loader):
-    return self.run_epoch('train', epoch, data_loader)
+  def train(self, epoch, data_loader, model, optimizer):
+    return self.run_epoch('train', epoch, data_loader, model, optimizer)

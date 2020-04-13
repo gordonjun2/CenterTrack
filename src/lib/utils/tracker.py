@@ -29,12 +29,17 @@ class Tracker(object):
     N = len(results)
     M = len(self.tracks)
 
+    #print(self.tracks)
+
     dets = np.array(
       [det['ct'] + det['tracking'] for det in results], np.float32) # N x 2
+
+    #print(dets)
     track_size = np.array([((track['bbox'][2] - track['bbox'][0]) * \
       (track['bbox'][3] - track['bbox'][1])) \
       for track in self.tracks], np.float32) # M
     track_cat = np.array([track['class'] for track in self.tracks], np.int32) # M
+    #print(track_cat)
     item_size = np.array([((item['bbox'][2] - item['bbox'][0]) * \
       (item['bbox'][3] - item['bbox'][1])) \
       for item in results], np.float32) # N
@@ -79,6 +84,7 @@ class Tracker(object):
       track['age'] = 1
       track['active'] = self.tracks[m[1]]['active'] + 1
       ret.append(track)
+      #print(track)
 
     if self.opt.public_det and len(unmatched_dets) > 0:
       # Public detection: only create tracks from provided detections
@@ -109,7 +115,7 @@ class Tracker(object):
           track['age'] = 1
           track['active'] =  1
           ret.append(track)
-    
+
     # Never used
     for i in unmatched_tracks:
       track = self.tracks[i]
@@ -124,6 +130,8 @@ class Tracker(object):
         track['ct'] = [ct[0] + v[0], ct[1] + v[1]]
         ret.append(track)
     self.tracks = ret
+
+    #print(ret)
     return ret
 
 def greedy_assignment(dist):

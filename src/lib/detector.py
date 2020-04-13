@@ -70,6 +70,9 @@ class Detector(object):
     load_time += (loaded_time - start_time)
     
     detections = []
+
+    # Start Detection
+
     for scale in self.opt.test_scales:
       scale_start_time = time.time()
       if not pre_processed:
@@ -97,7 +100,7 @@ class Detector(object):
       
       pre_process_time = time.time()
       pre_time += pre_process_time - scale_start_time
-      
+
       output, dets, forward_time = self.process(
         images, self.pre_images, pre_hms, pre_inds, return_time=True)
       net_time += forward_time - pre_process_time
@@ -110,13 +113,21 @@ class Detector(object):
 
       detections.append(dets)
 
+      #print(dets)
+
       if self.opt.debug >= 2:
         self.debug(
           self.debugger, images, dets, output, scale, 
           pre_images=self.pre_images if not self.opt.no_pre_img else None, 
           pre_hms=pre_hms)
 
+    # Detections DONE!
+    # Outputs: score, class, ct, tracking, bbox
+    
+    # Start Tracking
+
     results = self.merge_outputs(detections)
+    #print(results)
     torch.cuda.synchronize()
     end_time = time.time()
     merge_time += end_time - post_process_time
@@ -125,6 +136,9 @@ class Detector(object):
       public_det = meta['cur_dets'] if self.opt.public_det else None
       results = self.tracker.step(results, public_det)
       self.pre_images = images
+
+    # Trackings Done! 
+    # Outputs: score, class, ct, tracking, bbox, tracking_id, age, active
 
     tracking_time = time.time()
     track_time += tracking_time - end_time

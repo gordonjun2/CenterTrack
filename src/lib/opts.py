@@ -125,7 +125,7 @@ class opts(object):
                              help='batch size on the master gpu.')
     self.parser.add_argument('--num_iters', type=int, default=-1,
                              help='default: #samples / batch_size.')
-    self.parser.add_argument('--val_intervals', type=int, default=10000,
+    self.parser.add_argument('--val_intervals', type=int, default=1,
                              help='number of epochs to run validation.')
     self.parser.add_argument('--trainval', action='store_true',
                              help='include validation in training and '
@@ -379,9 +379,9 @@ class opts(object):
   def init(self, args=''):
     # only used in demo
     default_dataset_info = {
-      'ctdet': 'coco', 'multi_pose': 'coco_hp', 'ddd': 'nuscenes',
-      'tracking,ctdet': 'coco', 'tracking,multi_pose': 'coco_hp', 
-      'tracking,ddd': 'nuscenes'
+      'ctdet': 'ua_tracking', 'multi_pose': 'coco_hp', 'ddd': 'nuscenes',
+      'tracking,ctdet': 'kitti_tracking', 'tracking,multi_pose': 'coco_hp', 
+      'tracking,ddd': 'nuscenes', 'tracking': 'ua_tracking'
     }
     opt = self.parse()
     from dataset.dataset_factory import dataset_factory
