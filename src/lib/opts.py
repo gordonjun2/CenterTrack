@@ -49,6 +49,17 @@ class opts(object):
                              help='random seed') # from CornerNet
     self.parser.add_argument('--not_set_cuda_env', action='store_true',
                              help='used when training in slurm clusters.')
+    # Re-ID
+    self.parser.add_argument('--reid', action='store_true')
+    #self.parser.add_argument('--load_ckpt',default='./AIC2018_iamai/ReID/ReID_CNN/models/model_50_base_res18.ckpt',help='path to load ckpt')
+    #self.parser.add_argument('--n_layer',type=int,default=18,help='number of Resnet layers')
+    #self.parser.add_argument('--gallery',default='./AIC2018_iamai/ReID/ReID_CNN/VeRi_gallery_info_test.txt',help='path to load gallery')
+    self.parser.add_argument('--query',default='./AIC2018_iamai/ReID/ReID_CNN/Veh_ReID_Images/query',help='path to load query')
+    self.parser.add_argument('--single_query', action='store_true',help='use if there are more than 1 image of the vehicle to be queried')
+    self.parser.add_argument('--dis_mat',default='./AIC2018_iamai/ReID/ReID_CNN',help='path to store distance')
+    self.parser.add_argument('--reid_batch_size',default=2,help='batch_size for inferencing')
+    self.parser.add_argument('--dist', default='cosine', help='cosine | euclidean, distance calculation')
+    self.parser.add_argument('--reid_model', default='resnet18', help='resnet18 | resnet50, choose resnet18 or resnet50 for re-id')
 
     # log
     self.parser.add_argument('--print_iter', type=int, default=0, 
@@ -125,7 +136,7 @@ class opts(object):
                              help='batch size on the master gpu.')
     self.parser.add_argument('--num_iters', type=int, default=-1,
                              help='default: #samples / batch_size.')
-    self.parser.add_argument('--val_intervals', type=int, default=1,
+    self.parser.add_argument('--val_intervals', type=int, default=5,
                              help='number of epochs to run validation.')
     self.parser.add_argument('--trainval', action='store_true',
                              help='include validation in training and '
@@ -177,6 +188,9 @@ class opts(object):
     self.parser.add_argument('--not_rand_crop', action='store_true',
                              help='not use the random crop data augmentation'
                                   'from CornerNet.')
+    self.parser.add_argument('--not_max_crop', action='store_true',
+                             help='used when the training dataset has'
+                                  'inbalanced aspect ratios.')
     self.parser.add_argument('--shift', type=float, default=0,
                              help='when not using random crop, 0.1'
                                   'apply shift augmentation.')
@@ -242,6 +256,10 @@ class opts(object):
     self.parser.add_argument('--nuscenes_att_weight', type=float, default=1)
     self.parser.add_argument('--velocity', action='store_true')
     self.parser.add_argument('--velocity_weight', type=float, default=1)
+
+    # custom dataset
+    self.parser.add_argument('--custom_dataset_img_path', default='')
+    self.parser.add_argument('--custom_dataset_ann_path', default='')
 
   def parse(self, args=''):
     if args == '':
@@ -379,9 +397,9 @@ class opts(object):
   def init(self, args=''):
     # only used in demo
     default_dataset_info = {
-      'ctdet': 'ua_tracking', 'multi_pose': 'coco_hp', 'ddd': 'nuscenes',
+      'ctdet': 'coco', 'multi_pose': 'coco_hp', 'ddd': 'nuscenes',
       'tracking,ctdet': 'kitti_tracking', 'tracking,multi_pose': 'coco_hp', 
-      'tracking,ddd': 'nuscenes', 'tracking': 'ua_tracking'
+      'tracking,ddd': 'nuscenes', 'tracking': 'kitti_tracking'
     }
     opt = self.parse()
     from dataset.dataset_factory import dataset_factory

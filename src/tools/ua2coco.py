@@ -44,6 +44,19 @@ def convert(xml_list, xml_dir, json_file):
     #bnd_id = START_BOUNDING_BOX_ID
     id_count = 0
 
+    video_dict = {}
+    count = 1
+    for line in list_fp:
+        line = line.strip()
+        xml_f = os.path.join(xml_dir, line)
+        tree = ET.parse(xml_f)
+        root = tree.getroot()
+        folder = root.attrib
+        video_dict[folder['name']] = count
+        count = count + 1
+    # print(video_dict)
+
+    list_fp = open(xml_list, 'r')
     for line in list_fp:
         line = line.strip()
         print("Processing %s"%(line))
@@ -59,7 +72,7 @@ def convert(xml_list, xml_dir, json_file):
         for frame in root.iter('frame'):
             id_count = id_count + 1
             frame_name = int(frame.attrib['num'])
-            #print("Folder/Frame No. : %s/%s" % (folder['name'], frame_name))
+            print("Folder/Frame No. : %s/%s" % (folder['name'], frame_name))
             if frame_name < 10:
                 filename = folder['name'] + "/img" + "0000" + str(frame_name) + ".jpg"
             elif frame_name >= 10 and frame_name < 100:
@@ -70,7 +83,7 @@ def convert(xml_list, xml_dir, json_file):
                 filename = folder['name'] + "/img" + "0" + str(frame_name) + ".jpg"
             else:
                 filename = folder['name'] + "/img" + str(frame_name) + ".jpg"
-            image = {'file_name': filename, 'id': id_count, 'frame_id': frame_name}
+            image = {'file_name': filename, 'id': id_count, 'video_id': video_dict[folder['name']], 'frame_id': frame_name}
             json_dict['images'].append(image)
 
             for target in frame.iter('target'):
