@@ -1,3 +1,11 @@
+# Extras
+
+Vehicle ReID is adding to this repo. Please see the Google Slides for more information.
+
+https://docs.google.com/presentation/d/1L3CQWya2T8fqFcWDU1Y4xZSIjllE79GzvVqWkmQmL0I/edit?usp=sharing
+
+Contact Gordon at gordonoh@yahoo.com.sg (email) or @gordonjun (Telegram) for assistance. 
+
 # Tracking Objects as Points
 Simultaneous object detection and tracking using center points:
 ![](readme/fig2.png)

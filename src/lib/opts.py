@@ -59,7 +59,7 @@ class opts(object):
     self.parser.add_argument('--dis_mat',default='./AIC2018_iamai/ReID/ReID_CNN',help='path to store distance')
     self.parser.add_argument('--reid_batch_size',default=2,help='batch_size for inferencing')
     self.parser.add_argument('--dist', default='cosine', help='cosine | euclidean, distance calculation')
-    self.parser.add_argument('--reid_model', default='resnet18', help='resnet18 | resnet50, choose resnet18 or resnet50 for re-id')
+    self.parser.add_argument('--reid_model', default='resnet50', help='resnet18 | resnet50, choose resnet18 or resnet50 for re-id')
 
     # log
     self.parser.add_argument('--print_iter', type=int, default=0, 
